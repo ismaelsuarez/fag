@@ -1,0 +1,24 @@
+{
+  "name": "@config",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "files": [
+    "eslint",
+    "prettier",
+    "tsconfig",
+    "commitlint"
+  ],
+  "exports": {
+    "./eslint/base": "./eslint/base.cjs",
+    "./eslint/next": "./eslint/next.cjs",
+    "./eslint/nest": "./eslint/nest.cjs",
+    "./prettier": "./prettier/index.cjs",
+    "./tsconfig/base": "./tsconfig/base.json",
+    "./tsconfig/react": "./tsconfig/react.json",
+    "./tsconfig/node": "./tsconfig/node.json",
+    "./commitlint": "./commitlint/index.cjs"
+  }
+}
+
+

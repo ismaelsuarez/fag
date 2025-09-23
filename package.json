@@ -1,0 +1,41 @@
+{
+  "name": "ecom-farmacia",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@9.12.3",
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "format": "prettier -w .",
+    "prepare": "husky install",
+    "dev:storefront": "pnpm --filter storefront dev",
+    "dev:admin": "pnpm --filter admin dev",
+    "dev:api": "pnpm --filter api dev",
+    "build:storefront": "pnpm --filter storefront build",
+    "build:admin": "pnpm --filter admin build",
+    "build:api": "pnpm --filter api build",
+    "docker:build:storefront": "docker build -f apps/storefront/Dockerfile -t ecom-farmacia/storefront .",
+    "docker:build:admin": "docker build -f apps/admin/Dockerfile -t ecom-farmacia/admin .",
+    "docker:build:api": "docker build -f apps/api/Dockerfile -t ecom-farmacia/api .",
+    "compose:up": "docker compose up --build -d",
+    "compose:down": "docker compose down"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.4.0",
+    "@commitlint/config-conventional": "^19.4.0",
+    "@typescript-eslint/eslint-plugin": "^8.8.1",
+    "@typescript-eslint/parser": "^8.8.1",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-tailwindcss": "^3.17.5",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
+    "prettier": "^3.3.3",
+    "turbo": "^2.1.1",
+    "typescript": "^5.6.2"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "name": "@shared",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": ["dist", "src"],
+  "scripts": {
+    "build": "tsup src/index.ts --dts --format cjs,esm --clean",
+    "lint": "eslint .",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "tsup": "^8.2.4",
+    "vitest": "^2.0.5",
+    "@types/node": "^22.7.5",
+    "typescript": "^5.6.2"
+  }
+}
+
+
