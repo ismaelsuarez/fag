@@ -1,0 +1,54 @@
+### Health
+GET http://localhost:3002/api/health
+
+### Auth register
+POST http://localhost:3002/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "demo@local",
+  "password": "secret123"
+}
+
+### Auth login
+POST http://localhost:3002/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "demo@local",
+  "password": "secret123"
+}
+
+### Catalog list products
+GET http://localhost:3002/api/catalog/products
+
+### Cart get
+GET http://localhost:3002/api/cart
+
+### Cart add
+POST http://localhost:3002/api/cart/add
+Content-Type: application/json
+
+{
+  "variantId": "<REPLACE_VARIANT_ID>",
+  "quantity": 1
+}
+
+### Checkout validate (without prescription)
+POST http://localhost:3002/api/checkout/validate
+Content-Type: application/json
+
+{
+  "items": [{ "variantId": "<REPLACE_VARIANT_ID>", "quantity": 1 }]
+}
+
+### Payments MP preference
+POST http://localhost:3002/api/payments/mp/preference
+Content-Type: application/json
+
+{
+  "orderId": "<REPLACE_ORDER_ID>",
+  "amount": 1000
+}
+
+
