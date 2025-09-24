@@ -19,7 +19,10 @@
     "postcss": "^8.4.47",
     "autoprefixer": "^10.4.20",
     "@ui": "workspace:*",
-    "@shared": "workspace:*"
+    "@shared": "workspace:*",
+    "@tanstack/react-query": "^5.59.16",
+    "zod": "^3.23.8",
+    "next-intl": "^3.19.0"
   },
   "devDependencies": {
     "@types/node": "^22.7.5",

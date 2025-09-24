@@ -1,0 +1,58 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - name: Enable corepack
+        run: corepack enable
+      - name: Install deps
+        run: pnpm -w install --no-frozen-lockfile
+      - name: Build monorepo
+        run: pnpm -w build
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set tag
+        id: vars
+        run: echo "tag=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
+      - name: Build & push storefront
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: apps/storefront/Dockerfile
+          push: true
+          tags: ghcr.io/${{ github.repository }}/storefront:${{ steps.vars.outputs.tag }}
+      - name: Build & push admin
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: apps/admin/Dockerfile
+          push: true
+          tags: ghcr.io/${{ github.repository }}/admin:${{ steps.vars.outputs.tag }}
+      - name: Build & push api
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: apps/api/Dockerfile
+          push: true
+          tags: ghcr.io/${{ github.repository }}/api:${{ steps.vars.outputs.tag }}
+
+

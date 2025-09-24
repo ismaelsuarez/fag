@@ -25,6 +25,15 @@ Comandos
 - pnpm lint
 - pnpm typecheck
 
+Release
+-------
+- Crear tag basado en version del package root:
+  - `pnpm release:tag`
+- Push de tags `v*.*.*` dispara `.github/workflows/release.yml` y publica imágenes en GHCR:
+  - ghcr.io/<org>/<repo>/storefront:<tag>
+  - ghcr.io/<org>/<repo>/admin:<tag>
+  - ghcr.io/<org>/<repo>/api:<tag>
+
 Docker
 ------
 - apps/storefront: `docker build -f apps/storefront/Dockerfile -t ecom-farmacia/storefront .`

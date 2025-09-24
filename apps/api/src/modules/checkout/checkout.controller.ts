@@ -6,7 +6,8 @@ import { CheckoutService } from './checkout.service';
 
 const validateSchema = z.object({
   items: z.array(z.object({ variantId: z.string().uuid(), quantity: z.number().int().min(1) })),
-  prescriptionId: z.string().uuid().optional()
+  prescriptionId: z.string().uuid().optional(),
+  age: z.number().int().min(18, { message: 'Debe ser mayor de edad' })
 });
 
 @Controller('checkout')

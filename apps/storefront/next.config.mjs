@@ -3,6 +3,10 @@ const nextConfig = {
   experimental: {
     typedRoutes: true
   },
+  i18n: {
+    locales: ['es-AR'],
+    defaultLocale: 'es-AR'
+  },
   transpilePackages: ['@ui', '@shared'],
   output: 'standalone'
 };
