@@ -1,70 +1,205 @@
-ecom-farmacia
-==============
+# ecom-farmacia — Monorepo
 
-Monorepo pnpm + Turborepo para e-commerce de farmacia.
+## 1) Overview
+Ecommerce para cadena de farmacias (10 sucursales + central). Monorepo con API en NestJS y frontales en Next.js (storefront y admin). Persistencia en PostgreSQL, cache/colas en Redis. Infra local prevista con Docker Compose (Postgres, Redis, Meilisearch, MinIO, Nginx — los últimos tres planificados para próximos sprints).
 
-Apps
-----
-- apps/api (NestJS)
-- apps/storefront (Next.js App Router + TS + Tailwind)
-- apps/admin (Next.js + Tailwind + shadcn/ui)
+Principios:
+- Modularidad y dominios claros (catálogo, stock, precios, carrito, pedidos, pagos, recetas, etc.).
+- Seguridad: JWT/OAuth2, buenas prácticas (secrets fuera del VC, WAF/Reverse Proxy/Nginx, VPN si aplica).
+- Observabilidad: preparada para incorporar logs estructurados/traceo/métricas (a definir en sprint de observabilidad).
 
-Packages
---------
-- packages/shared (tipos/DTOs Zod)
-- packages/ui (design system)
-- packages/config (eslint, prettier, tsconfig, commitlint)
+---
 
-Comandos
---------
-- pnpm dev (todas las apps en paralelo)
-- pnpm dev:storefront | dev:admin | dev:api
-- pnpm build (build monorepo)
-- pnpm build:storefront | build:admin | build:api
-- pnpm test (Vitest/Jest)
-- pnpm lint
-- pnpm typecheck
+## 2) Tech Stack
+- Backend: NestJS + TypeORM + Swagger + BullMQ/Redis.
+- Front: Next.js (App Router) + Tailwind + shadcn/ui + Radix + React Query + Zod.
+- Infra local: Docker Compose (Postgres, Redis; Meilisearch/MinIO/Nginx planificados).
+- Monorepo: pnpm + Turborepo.
 
-Release
--------
-- Crear tag basado en version del package root:
-  - `pnpm release:tag`
-- Push de tags `v*.*.*` dispara `.github/workflows/release.yml` y publica imágenes en GHCR:
-  - ghcr.io/<org>/<repo>/storefront:<tag>
-  - ghcr.io/<org>/<repo>/admin:<tag>
-  - ghcr.io/<org>/<repo>/api:<tag>
+---
 
-Docker
-------
-- apps/storefront: `docker build -f apps/storefront/Dockerfile -t ecom-farmacia/storefront .`
-- apps/admin: `docker build -f apps/admin/Dockerfile -t ecom-farmacia/admin .`
-- apps/api: `docker build -f apps/api/Dockerfile -t ecom-farmacia/api .`
+## 3) Estructura del Monorepo
+```
+/ (raíz)
+├─ apps/
+│  ├─ api/         # NestJS (TypeORM, Swagger, BullMQ)
+│  ├─ storefront/  # Next.js Storefront (App Router)
+│  └─ admin/       # Next.js Backoffice (shadcn/ui)
+├─ packages/
+│  ├─ shared/      # DTOs/Esquemas Zod, tipos compartidos
+│  ├─ ui/          # Design system (Tailwind + Radix)
+│  └─ config/      # tsconfig/eslint/prettier/commitlint
+├─ .github/workflows/ci.yml
+├─ .github/workflows/release.yml
+├─ docker-compose.yml
+└─ README.md
+```
 
-Docker Compose
---------------
-- Levantar todo: `pnpm compose:up`
-- Apagar: `pnpm compose:down`
+Tabla de paquetes
 
-Notas
------
-- Aliases TS: `@shared`, `@ui` configurados en `tsconfig.base.json` y en cada app.
-- Husky: pre-commit (lint+typecheck), commit-msg (commitlint).
-- CI: `.github/workflows/ci.yml` ejecuta lint, typecheck, test, build, y docker build.
+| Paquete       | Tipo | Path             | Scripts principales |
+|---|---|---|---|
+| ecom-farmacia | root | ./              | dev, build, test, lint, typecheck, release:tag |
+| api           | app  | apps/api        | dev, start:dev, build, test, test:e2e, migration:run, seed |
+| storefront    | app  | apps/storefront | dev, build |
+| admin         | app  | apps/admin      | dev, build |
+| shared        | lib  | packages/shared | build, test, typecheck |
+| ui            | lib  | packages/ui     | build, test, typecheck |
+| config        | lib  | packages/config | (exporta eslint/prettier/tsconfig/commitlint) |
 
-Desarrollo local
-----------------
-- pnpm dev: arranca todas las apps en paralelo
-- pnpm dev:storefront (http://localhost:3000)
-- pnpm dev:admin (http://localhost:3001)
-- pnpm dev:api (http://localhost:3002)
+---
 
-CI
---
-- GitHub Actions en `.github/workflows/ci.yml`: lint, typecheck, test, build y docker build por app.
+## 4) Requisitos / Prerrequisitos
+- Node.js LTS ≥ 20.x
+- pnpm ≥ 9
+- Docker y Docker Compose (para entorno containerizado)
+- (Opcional) jq y curl para smoke tests
 
-Docker
-------
-- Cada app tiene su Dockerfile y .dockerignore. Ejemplo:
-  - docker build -f apps/storefront/Dockerfile -t ecom-farmacia/storefront:local .
+---
+
+## 5) Variables de Entorno
+Si no existe `.env.example` en la raíz, créalo (o usa el provisto).
+
+Core
+```
+POSTGRES_URL=postgres://ecom:pass@localhost:5432/ecom
+REDIS_URL=redis://localhost:6379
+MEILI_URL=http://localhost:7700
+MINIO_URL=http://localhost:9000
+MINIO_ACCESS_KEY=minio
+MINIO_SECRET_KEY=minio123
+JWT_SECRET=changeme
+```
+
+Zetti (ERP)
+```
+ZETTI_BASE_URL=https://<host-o-dns>/api-rest
+ZETTI_CLIENT_ID=<client_id>
+ZETTI_CLIENT_SECRET=<client_secret>
+ZETTI_USERNAME=<username>
+ZETTI_PASSWORD=<password>
+ZETTI_NODE_ID=<pendiente>
+ZETTI_ECOM_GROUP_ID=2
+```
+
+Mercado Pago
+```
+MP_ACCESS_TOKEN=<...>
+MP_WEBHOOK_SECRET=<...>
+```
+
+AFIP (homologación)
+```
+AFIP_ENV=homologacion
+AFIP_CERT=/path/a/cert.crt
+AFIP_KEY=/path/a/private.key
+```
+
+Notas por apps:
+- apps/api: ver `apps/api/env.example` como referencia (DB/Redis/MP/AFIP).
+- apps/storefront: `env.example` con `NEXT_PUBLIC_API_URL=http://localhost:3002/api`.
+
+---
+
+## 6) Arranque en Desarrollo (sin Docker)
+```bash
+pnpm -w install
+pnpm -w run build
+
+# API (http://localhost:3002)
+pnpm --filter api run dev        # o: pnpm --filter api run start:dev
+
+# Storefront (http://localhost:3000)
+pnpm --filter storefront run dev
+
+# Admin (http://localhost:3001)
+pnpm --filter admin run dev
+```
+Chequeos rápidos:
+```bash
+curl -i http://localhost:3002/api/health
+# Swagger: http://localhost:3002/api/docs
+```
+
+---
+
+## 7) Arranque con Docker Compose
+Servicios y puertos (definidos hoy):
+- postgres:5432, redis:6379, api:3002, storefront:3000, admin:3001 (Meilisearch/MinIO/Nginx planificados).
+
+```bash
+docker compose up -d
+docker ps
+curl -i http://localhost:3002/api/health
+```
+
+---
+
+## 8) Quickstart — Integración Zetti (Smoke)
+Pruebas mínimas (reemplazar variables por las del .env):
+```bash
+# 1) Reach público
+curl -i "$ZETTI_BASE_URL/about"
+
+# 2) Obtener encode (Basic)
+curl -s "$ZETTI_BASE_URL/oauth-server/encode?client_id=$ZETTI_CLIENT_ID&client_secret=$ZETTI_CLIENT_SECRET"
+
+# 3) Token (password grant) – pegar ENCODE en Authorization: Basic
+curl -s -X POST "$ZETTI_BASE_URL/oauth-server/oauth/token" \
+  -H "Authorization: Basic <ENCODE>" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  --data "grant_type=password&username=$ZETTI_USERNAME&password=$ZETTI_PASSWORD"
+```
+Cuando llegue ZETTI_NODE_ID, probar:
+```
+GET  $ZETTI_BASE_URL/user/me/permissions/{ZETTI_NODE_ID}    (Bearer access_token)
+POST $ZETTI_BASE_URL/v2/{ZETTI_NODE_ID}/products/search     (con filtros)
+```
+
+---
+
+## 9) Calidad y Tests
+```bash
+pnpm -w run lint
+pnpm -w run typecheck
+pnpm -w run test
+# e2e API
+pnpm --filter api run test:e2e
+```
+- Husky: pre-commit (lint+typecheck) y commit-msg (Commitlint) configurados.
+- E2E sugeridos (próximo sprint): Playwright — Home → PDP → Carrito → Checkout (sandbox).
+
+---
+
+## 10) CI/CD
+- CI en `.github/workflows/ci.yml`: lint, typecheck, test, build, docker build por app.
+- Release en `.github/workflows/release.yml`: push de tag `v*.*.*` publica imágenes en GHCR.
+- Crear tag desde versión:
+```bash
+pnpm release:tag
+```
+
+---
+
+## 11) Troubleshooting
+- Puertos ocupados: 3000/3001/3002, 5432, 6379, 7700, 9000/9001.
+- Versiones Node/pnpm: verificar (Node ≥ 20, pnpm ≥ 9).
+- .env: claves faltantes → errores en ERP/MP/AFIP.
+- CORS/Proxy: si el front no llega a la API, revisar `NEXT_PUBLIC_API_URL` y Nginx (cuando se sume).
+- Windows: considerar WSL2 para Docker/Node si hay problemas con rutas o permisos.
+
+---
+
+## 12) Roadmap corto (siguiente sprint)
+- Cargar ZETTI_NODE_ID y validar permisos.
+- Indexar catálogo (Meilisearch) y exponer stock por sucursal en PDP/PLP.
+- Integrar Mercado Pago (Preferencias + Webhooks + estados).
+- AFIP Homologación (CAE) en checkout.
+
+---
+
+## 13) Licencia y Créditos
+- Licencia: por definir.
+- Créditos: Equipo Ismael + colaboradores.
 
 
