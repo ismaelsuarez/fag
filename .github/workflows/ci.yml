@@ -11,12 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Enable corepack
+        run: corepack enable
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'pnpm'
-      - name: Enable corepack
-        run: corepack enable
       - name: Install dependencies
         run: pnpm -w install --no-frozen-lockfile
       - name: Lint

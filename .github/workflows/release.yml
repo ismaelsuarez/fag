@@ -13,13 +13,13 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v4
+      - name: Enable corepack
+        run: corepack enable
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'pnpm'
-      - name: Enable corepack
-        run: corepack enable
       - name: Install deps
         run: pnpm -w install --no-frozen-lockfile
       - name: Build monorepo
