@@ -106,19 +106,36 @@ Notas por apps
 ---
 
 ## 6) Arranque en Desarrollo (sin Docker)
-```bash
-pnpm -w install
-pnpm -w run build
 
-# API (http://localhost:3002)
-pnpm --filter api run dev        # o: pnpm --filter api run start:dev
+⚠️ **IMPORTANTE: Para arrancar el proyecto por primera vez, sigue esta guía:**
 
-# Storefront (http://localhost:3000)
-pnpm --filter storefront run dev
+### 📖 [GUIA_ARRANQUE.md](./GUIA_ARRANQUE.md) ← **LEE ESTO PRIMERO**
 
-# Admin (http://localhost:3001)
-pnpm --filter admin run dev
+### ✅ [CHECKLIST.md](./CHECKLIST.md) ← **Checklist paso a paso**
+
+### 🔧 Script de Diagnóstico
+```powershell
+.\scripts\diagnostico.ps1
 ```
+
+### Arranque Rápido (resumen)
+```bash
+# 1. Instalar dependencias
+pnpm -w install
+
+# 2. Levantar base de datos y Redis
+docker compose up -d db redis
+
+# 3. Ejecutar migraciones
+cd apps/api
+pnpm migration:run
+pnpm seed
+cd ../..
+
+# 4. Arrancar aplicaciones
+pnpm dev
+```
+
 Chequeos rápidos
 ```bash
 curl -i http://localhost:3002/api/health
