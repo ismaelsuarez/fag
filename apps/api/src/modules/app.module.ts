@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { LoggerModule } from 'nestjs-pino';
 
 import { AppController } from '../presentation/http/app.controller';
 import { AppService } from '../services/app.service';
@@ -14,9 +15,18 @@ import { PaymentsModule } from './payments/payments.module';
 import { OrdersModule } from './orders/orders.module';
 import { PrescriptionsModule } from './prescriptions/prescriptions.module';
 import { SearchModule } from './search/search.module';
+import { ErpSyncModule } from '../erp-sync/erp-sync.module';
 
 @Module({
   imports: [
+    LoggerModule.forRoot({
+      pinoHttp: {
+        level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+        genReqId: (req) =>
+          (req.headers['x-request-id'] as string) || `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+        quietReqLogger: true
+      }
+    }),
     AppConfigModule,
     DatabaseModule,
     ...(process.env.NODE_ENV === 'test' ? [] : [QueuesModule]),
@@ -28,7 +38,8 @@ import { SearchModule } from './search/search.module';
     PaymentsModule,
     OrdersModule,
     PrescriptionsModule,
-    SearchModule
+    SearchModule,
+    ErpSyncModule
   ],
   controllers: [AppController],
   providers: [AppService]

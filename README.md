@@ -1,20 +1,24 @@
 # ecom-farmacia — Monorepo
 
 ## 1) Overview
-Ecommerce para cadena de farmacias (10 sucursales + central). Monorepo con API en NestJS y frontales en Next.js (storefront y admin). Persistencia en PostgreSQL, cache/colas en Redis. Infra local prevista con Docker Compose (Postgres, Redis, Meilisearch, MinIO, Nginx — los últimos tres planificados para próximos sprints).
+Ecommerce para cadena de farmacias (≈10 sucursales + central). Monorepo con:
+- API en NestJS (dominios: catálogo, stock, precios, carrito, checkout, órdenes, pagos, recetas, permisos/health ERP)
+- Frontales en Next.js (Storefront y Admin)
+- PostgreSQL para datos, Redis para colas y caching
+- Infra local mediante Docker Compose (Postgres, Redis; Meilisearch, MinIO y Nginx planificados para próximos sprints)
 
-Principios:
-- Modularidad y dominios claros (catálogo, stock, precios, carrito, pedidos, pagos, recetas, etc.).
-- Seguridad: JWT/OAuth2, buenas prácticas (secrets fuera del VC, WAF/Reverse Proxy/Nginx, VPN si aplica).
-- Observabilidad: preparada para incorporar logs estructurados/traceo/métricas (a definir en sprint de observabilidad).
+Principios
+- Modularidad (dominios independientes, SOLID, upserts idempotentes por externalId/ERP)
+- Seguridad (secrets fuera del repo, OAuth2/JWT, WAF/Reverse-proxy/Nginx, VPN si aplica)
+- Observabilidad mínima (logs estructurados, request-id; /metrics Prometheus en API)
 
 ---
 
 ## 2) Tech Stack
-- Backend: NestJS + TypeORM + Swagger + BullMQ/Redis.
-- Front: Next.js (App Router) + Tailwind + shadcn/ui + Radix + React Query + Zod.
-- Infra local: Docker Compose (Postgres, Redis; Meilisearch/MinIO/Nginx planificados).
-- Monorepo: pnpm + Turborepo.
+- Backend: NestJS + TypeORM (Postgres) + Swagger + BullMQ/Redis
+- Front: Next.js (App Router) + Tailwind + shadcn/ui + Radix + React Query + Zod
+- Infra local: Docker Compose (Postgres, Redis; Meilisearch/MinIO/Nginx planificados)
+- Monorepo: pnpm + Turborepo
 
 ---
 
@@ -58,7 +62,7 @@ Tabla de paquetes
 ---
 
 ## 5) Variables de Entorno
-Si no existe `.env.example` en la raíz, créalo (o usa el provisto).
+Si no existe `.env.example` en la raíz, créalo (o usa el provisto en este proyecto).
 
 Core
 ```
@@ -95,9 +99,9 @@ AFIP_CERT=/path/a/cert.crt
 AFIP_KEY=/path/a/private.key
 ```
 
-Notas por apps:
-- apps/api: ver `apps/api/env.example` como referencia (DB/Redis/MP/AFIP).
-- apps/storefront: `env.example` con `NEXT_PUBLIC_API_URL=http://localhost:3002/api`.
+Notas por apps
+- apps/api: ver `apps/api/env.example` como referencia (DB/Redis/MP/AFIP/ERP)
+- apps/storefront: `env.example` con `NEXT_PUBLIC_API_URL=http://localhost:3002/api`
 
 ---
 
@@ -115,7 +119,7 @@ pnpm --filter storefront run dev
 # Admin (http://localhost:3001)
 pnpm --filter admin run dev
 ```
-Chequeos rápidos:
+Chequeos rápidos
 ```bash
 curl -i http://localhost:3002/api/health
 # Swagger: http://localhost:3002/api/docs
@@ -125,7 +129,8 @@ curl -i http://localhost:3002/api/health
 
 ## 7) Arranque con Docker Compose
 Servicios y puertos (definidos hoy):
-- postgres:5432, redis:6379, api:3002, storefront:3000, admin:3001 (Meilisearch/MinIO/Nginx planificados).
+- postgres:5432, redis:6379, api:3002, storefront:3000, admin:3001  
+(Meilisearch/MinIO/Nginx planificados para próximos sprints)
 
 ```bash
 docker compose up -d
@@ -136,7 +141,7 @@ curl -i http://localhost:3002/api/health
 ---
 
 ## 8) Quickstart — Integración Zetti (Smoke)
-Pruebas mínimas (reemplazar variables por las del .env):
+> Reemplazar variables por las del .env; seguir nombres exactos de Swagger.
 ```bash
 # 1) Reach público
 curl -i "$ZETTI_BASE_URL/about"
@@ -150,10 +155,10 @@ curl -s -X POST "$ZETTI_BASE_URL/oauth-server/oauth/token" \
   -H "Content-Type: application/x-www-form-urlencoded" \
   --data "grant_type=password&username=$ZETTI_USERNAME&password=$ZETTI_PASSWORD"
 ```
-Cuando llegue ZETTI_NODE_ID, probar:
+Cuando llegue ZETTI_NODE_ID, probar
 ```
 GET  $ZETTI_BASE_URL/user/me/permissions/{ZETTI_NODE_ID}    (Bearer access_token)
-POST $ZETTI_BASE_URL/v2/{ZETTI_NODE_ID}/products/search     (con filtros)
+POST $ZETTI_BASE_URL/v2/{ZETTI_NODE_ID}/products/search     (con filtros idsGroups o actualizationDateFrom/To)
 ```
 
 ---
@@ -166,15 +171,15 @@ pnpm -w run test
 # e2e API
 pnpm --filter api run test:e2e
 ```
-- Husky: pre-commit (lint+typecheck) y commit-msg (Commitlint) configurados.
-- E2E sugeridos (próximo sprint): Playwright — Home → PDP → Carrito → Checkout (sandbox).
+- Husky: pre-commit (lint+typecheck) y commit-msg (Commitlint) configurados
+- E2E sugeridos (próximo sprint): Playwright — Home → PDP → Carrito → Checkout (sandbox)
 
 ---
 
 ## 10) CI/CD
-- CI en `.github/workflows/ci.yml`: lint, typecheck, test, build, docker build por app.
-- Release en `.github/workflows/release.yml`: push de tag `v*.*.*` publica imágenes en GHCR.
-- Crear tag desde versión:
+- CI en `.github/workflows/ci.yml`: lint, typecheck, test, build, docker build por app
+- Release en `.github/workflows/release.yml`: push de tag `v*.*.*` publica imágenes en GHCR
+- Crear tag desde versión
 ```bash
 pnpm release:tag
 ```
@@ -182,24 +187,24 @@ pnpm release:tag
 ---
 
 ## 11) Troubleshooting
-- Puertos ocupados: 3000/3001/3002, 5432, 6379, 7700, 9000/9001.
-- Versiones Node/pnpm: verificar (Node ≥ 20, pnpm ≥ 9).
-- .env: claves faltantes → errores en ERP/MP/AFIP.
-- CORS/Proxy: si el front no llega a la API, revisar `NEXT_PUBLIC_API_URL` y Nginx (cuando se sume).
-- Windows: considerar WSL2 para Docker/Node si hay problemas con rutas o permisos.
+- Puertos ocupados: 3000/3001/3002, 5432, 6379, 7700, 9000/9001
+- Node/pnpm: verificar versiones (Node ≥ 20, pnpm ≥ 9)
+- .env: claves faltantes → errores en ERP/MP/AFIP
+- CORS/Proxy: si el front no llega a la API, revisar `NEXT_PUBLIC_API_URL` y proxy/Nginx
+- Windows: considerar WSL2 para Docker/Node
 
 ---
 
 ## 12) Roadmap corto (siguiente sprint)
-- Cargar ZETTI_NODE_ID y validar permisos.
-- Indexar catálogo (Meilisearch) y exponer stock por sucursal en PDP/PLP.
-- Integrar Mercado Pago (Preferencias + Webhooks + estados).
-- AFIP Homologación (CAE) en checkout.
+- Cargar ZETTI_NODE_ID y validar permisos
+- Indexar catálogo (Meilisearch) y exponer stock por sucursal en PDP/PLP
+- Integrar Mercado Pago (Preferencias + Webhooks + estados)
+- AFIP Homologación (CAE) en checkout
 
 ---
 
 ## 13) Licencia y Créditos
-- Licencia: por definir.
-- Créditos: Equipo Ismael + colaboradores.
+- Licencia: por definir
+- Créditos: Equipo Ismael + colaboradores
 
 
