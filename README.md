@@ -220,7 +220,34 @@ pnpm release:tag
 
 ---
 
-## 13) Licencia y Créditos
+## 13) Documentación Adicional
+
+### 📚 Guías de Inicio
+- **[INICIO_RAPIDO.md](./INICIO_RAPIDO.md)** - Guía de 5 minutos para arrancar el proyecto
+- **[GUIA_ARRANQUE.md](./GUIA_ARRANQUE.md)** - Guía completa paso a paso
+- **[CHECKLIST.md](./CHECKLIST.md)** - Checklist interactivo de verificación
+
+### 🔗 Integración con Zetti (ERP)
+- **[docs/ANALISIS_API_ZETTI.md](./docs/ANALISIS_API_ZETTI.md)** - Análisis ejecutivo de la integración
+- **[docs/INTEGRACION_ZETTI_COMPLETA.md](./docs/INTEGRACION_ZETTI_COMPLETA.md)** - Documentación exhaustiva (60+ páginas)
+- **[docs/ZETTI_QUICK_REFERENCE.md](./docs/ZETTI_QUICK_REFERENCE.md)** - Referencia rápida de endpoints
+- **[docs/ERP_SYNC.md](./docs/ERP_SYNC.md)** - Guía rápida de sincronización
+
+### 🔧 Scripts
+- **[scripts/setup.ps1](./scripts/setup.ps1)** - Setup automatizado completo
+- **[scripts/diagnostico.ps1](./scripts/diagnostico.ps1)** - Diagnóstico del sistema
+
+### 📋 Documentación Técnica
+- **[docs/INFORME_SPRINT0.md](./docs/INFORME_SPRINT0.md)** - Estado actual del proyecto
+- **[PROBLEMAS_RESUELTOS.md](./PROBLEMAS_RESUELTOS.md)** - Problemas identificados y solucionados
+
+### 🔗 Enlaces Útiles
+- **Documentación Oficial Zetti:** https://sites.google.com/zetti.com.ar/api-rest-docum-externos/
+- **Swagger Zetti (Demo):** https://demo.zetti.com.ar/api-rest/swagger-ui/index.html
+
+---
+
+## 14) Licencia y Créditos
 - Licencia: por definir
 - Créditos: Equipo Ismael + colaboradores
 

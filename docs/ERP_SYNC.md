@@ -1,4 +1,12 @@
-# ERP Sync (Zetti) — Guía
+# ERP Sync (Zetti) — Guía Rápida
+
+> **📚 Para documentación completa y detallada, consulta:**
+> - [INTEGRACION_ZETTI_COMPLETA.md](./INTEGRACION_ZETTI_COMPLETA.md) - Documentación exhaustiva
+> - [ZETTI_QUICK_REFERENCE.md](./ZETTI_QUICK_REFERENCE.md) - Referencia rápida
+
+---
+
+# ERP Sync (Zetti) — Guía Rápida
 
 ## Variables (.env apps/api/env.example)
 ```
@@ -49,3 +57,30 @@ curl -s "$ZETTI_API_BASE/user/me/permissions/$ZETTI_NODE_GRUPO" -H "Authorizatio
 ## Notas
 - Respetar rate-limit QPS (`ZETTI_RATE_LIMIT_QPS`)
 - Logs pino con `x-request-id` y métricas en `/metrics`
+
+---
+
+## 📚 Documentación Adicional
+
+### [INTEGRACION_ZETTI_COMPLETA.md](./INTEGRACION_ZETTI_COMPLETA.md)
+Documentación exhaustiva que incluye:
+- ✅ Análisis completo de la API de Zetti
+- ✅ Modelo jerárquico de nodos explicado
+- ✅ Flujo completo de autenticación OAuth 2.0
+- ✅ Todos los endpoints implementados
+- ✅ Endpoints pendientes y prioridades
+- ✅ Ejemplos prácticos de uso
+- ✅ Troubleshooting detallado
+- ✅ Diagramas de flujo
+
+### [ZETTI_QUICK_REFERENCE.md](./ZETTI_QUICK_REFERENCE.md)
+Referencia rápida con:
+- ✅ Comandos útiles
+- ✅ Ejemplos de curl
+- ✅ Estructura de datos
+- ✅ Soluciones rápidas
+- ✅ Best practices
+
+### Documentación Oficial de Zetti
+- **Web:** https://sites.google.com/zetti.com.ar/api-rest-docum-externos/
+- **Swagger:** https://demo.zetti.com.ar/api-rest/swagger-ui/index.html
