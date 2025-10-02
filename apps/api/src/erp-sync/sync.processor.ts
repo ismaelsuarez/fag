@@ -13,7 +13,7 @@ type SyncPayload =
 @Processor(ERP_QUEUE, { concurrency: 1 })
 export class SyncProcessor extends WorkerHost {
   private readonly logger = new Logger(SyncProcessor.name);
-  constructor(private readonly sync: SyncService, @InjectQueue(ERP_DLQ) private readonly dlq: Queue) {
+  constructor(private readonly sync: SyncService) {
     super();
   }
 
@@ -30,7 +30,7 @@ export class SyncProcessor extends WorkerHost {
       }
     } catch (err: any) {
       this.logger.error(`Job failed: ${job.name}`, err?.stack || String(err));
-      await this.dlq.add(job.name, { ...job.data, lastError: String(err) });
+      // TODO: Implement DLQ handling
       throw err; // para respetar reintentos/backoff
     }
   }

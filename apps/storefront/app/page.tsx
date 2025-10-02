@@ -1,3 +1,4 @@
+"use client";
 import { BranchSelector } from '../components/BranchSelector';
 import { CartDrawer } from '../components/CartDrawer';
 import { useProducts } from '../hooks/useProducts';

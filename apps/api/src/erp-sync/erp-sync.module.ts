@@ -9,13 +9,18 @@ import { ErpProduct } from './domain/erp_product.entity';
 import { ErpSku } from './domain/erp_sku.entity';
 import { ErpBranchStock } from './domain/erp_branch_stock.entity';
 import { ErpProductImage } from './domain/erp_product_image.entity';
+import { QueuesModule } from '../queues/queues.module';
 
-export const ERP_QUEUE = 'erp:products';
-export const ERP_DLQ = 'erp:products:dlq';
+export const ERP_QUEUE = 'erp-products';
+export const ERP_DLQ = 'erp-products-dlq';
 
 @Module({
   imports: [
-    BullModule.registerQueue({ name: ERP_QUEUE }, { name: ERP_DLQ }),
+    QueuesModule,
+    BullModule.registerQueue(
+      { name: ERP_QUEUE },
+      { name: ERP_DLQ }
+    ),
     TypeOrmModule.forFeature([ErpProduct, ErpSku, ErpBranchStock, ErpProductImage])
   ],
   controllers: [SyncController],
