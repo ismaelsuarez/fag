@@ -2,6 +2,8 @@
   "extends": "../../packages/config/tsconfig/node.json",
   "compilerOptions": {
     "baseUrl": ".",
+    "module": "CommonJS",
+    "moduleResolution": "node",
     "paths": {
       "@shared/*": ["../../packages/shared/src/*"]
     }

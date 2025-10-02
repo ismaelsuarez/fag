@@ -1,0 +1,25 @@
+# Exclude large/irrelevant folders from Docker build context
+node_modules
+**/node_modules
+**/.next
+**/dist
+**/build
+**/.turbo
+coverage
+
+# VCS
+.git
+.gitignore
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+
+# Env files (passed via compose/runtime)
+.env
+**/.env
+**/.env.local
+**/.env.*
+
+# Logs
+*.log

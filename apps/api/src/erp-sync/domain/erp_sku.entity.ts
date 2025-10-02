@@ -9,16 +9,16 @@ export class ErpSku {
   @ManyToOne(() => ErpProduct, (p) => p.skus, { nullable: false })
   product!: ErpProduct;
 
-  @Column({ unique: true })
+  @Column({ type: 'varchar', unique: true })
   externalId!: string; // ID ERP
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   code!: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   barcode!: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   presentation!: string | null;
 
   @CreateDateColumn()

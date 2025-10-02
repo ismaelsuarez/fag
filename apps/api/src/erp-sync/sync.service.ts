@@ -54,7 +54,7 @@ export class SyncService {
     }
   }
 
-  private async upsertDetails(items: Array<{ nodeId: string; productId: string; skuId?: string | null; price?: number | null; currency?: string | null; stock?: number | null; stockReserved?: number | null }>) {
+  private async upsertDetails(items: Array<{ nodeId: string | number; productId: string | number; skuId?: string | number | null; price?: number | string | null; currency?: string | null; stock?: number | string | null; stockReserved?: number | string | null }>) {
     await this.products.manager.transaction(async (trx) => {
       for (const d of items) {
         const externalProductId = String(d.productId);

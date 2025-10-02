@@ -44,6 +44,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3001
+      - NEXT_PUBLIC_API_URL=http://api:3002/api
     ports:
       - "3001:3001"
     depends_on:
@@ -56,6 +57,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3000
+      - NEXT_PUBLIC_API_URL=http://api:3002/api
     ports:
       - "3000:3000"
     depends_on:

@@ -9,7 +9,7 @@ export class ErpBranchStock {
   @ManyToOne(() => ErpSku, { nullable: false })
   sku!: ErpSku;
 
-  @Column()
+  @Column({ type: 'varchar' })
   branchId!: string;
 
   @Column('numeric', { transformer: { to: (v: number) => v, from: (v: string) => Number(v) } })

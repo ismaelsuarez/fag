@@ -1,4 +1,4 @@
-import got, { Got, OptionsOfTextResponseBody } from 'got';
+import got, { Got } from 'got';
 import { z } from 'zod';
 import {
   zettiEncodeSchema,
@@ -94,9 +94,9 @@ export class ZettiClient {
     return token;
   }
 
-  private asFormUrlEncoded(options: OptionsOfTextResponseBody) {
+  private asFormUrlEncoded = (options: any) => {
     options.headers = { ...(options.headers || {}), 'content-type': 'application/x-www-form-urlencoded' };
-  }
+  };
 
   private async ensureAccessToken() {
     if (!this.state.encode) await this.getEncodeCredentials();

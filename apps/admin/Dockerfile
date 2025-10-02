@@ -3,8 +3,10 @@ FROM node:20-alpine AS builder
 RUN corepack enable
 WORKDIR /repo
 COPY . .
-RUN pnpm -w install --no-frozen-lockfile
-RUN pnpm --filter admin build
+# Ensure no local node_modules are included in context
+RUN rm -rf node_modules
+RUN pnpm -r install --no-frozen-lockfile --prefer-offline
+RUN pnpm --filter @ui --filter @shared --filter admin build
 
 FROM node:20-alpine AS runner
 WORKDIR /app

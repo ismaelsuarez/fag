@@ -7,16 +7,16 @@ export class ErpProduct {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column({ unique: true })
+  @Column({ type: 'varchar', unique: true })
   externalId!: string; // ID ERP
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   name!: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   brand!: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   category!: string | null;
 
   @Column({ default: false })
